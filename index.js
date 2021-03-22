@@ -19,13 +19,26 @@ const bot = new TelegramBot(process.env.TOKEN, {
         }
     }
 })
+//Heroku
+var app = express();
+
+app.set('port', (process.env.PORT || 27017));
+
+//For avoidong Heroku $PORT error
+app.get('/', function (request, response) {
+    var result = 'App is running'
+    response.send(result);
+}).listen(app.get('port'), function () {
+    console.log('App is running, server is listening on port ', app.get('port'));
+});
 
 //бд расписания
 mongoose.connect('mongodb://localhost/vsudatabase', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
-    useCreateIndex: true
+    useCreateIndex: true,
+
 })
     .then(() => console.log('Mongo запущен!'))
     .catch((err) => console.log(err))
@@ -51,19 +64,6 @@ const Zdrav = mongoose.model('zdrav')
 //database.korpus.forEach(kp => new Korp(kp).save().catch(e => console.log(e)))
 //database.buhgal.forEach(b => new Buh(b).save().catch(e => console.log(e)))
 //database.zdravpoint.forEach(z => new Zdrav(z).save().catch(e => console.log(e)))
-
-//Heroku
-var app = express();
-
-app.set('port', (process.env.PORT || 27017));
-
-//For avoidong Heroku $PORT error
-app.get('/', function (request, response) {
-    var result = 'App is running'
-    response.send(result);
-}).listen(app.get('port'), function () {
-    console.log('App is running, server is listening on port ', app.get('port'));
-});
 
 /* инлайн херня */
 bot.on('inline_query', query => {
